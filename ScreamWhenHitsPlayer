@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class ScreamWhenHitsPlayer : MonoBehaviour
+{
+   public AudioSource audi;
+    public AudioClip scream;
+public static int lives;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        lives = 3; 
+    }
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.tag == "Zombie")
+        {
+            audi.clip = scream;
+            audi.PlayOneShot(audi.clip);
+            lives = lives - 1;
+        }
+        if (col.gameObject.tag == "Dummie")
+        {
+            audi.clip = scream;
+            audi.PlayOneShot(audi.clip);
+            lives = lives - 1;
+        }
+    }
+    // Update is called once per frame
+    void Update()
+    {
+     
+    }
+}
