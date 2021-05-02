@@ -1,0 +1,145 @@
+using UnityEngine;
+using System.Collections;
+
+public class BulletScript : MonoBehaviour {
+    public static int score;
+    public static int ZombieCounter;
+    //   GameObject enemy;
+    //  Animator anim;  
+    //  GameObject player;
+    //   private GameObject room1Moving;
+    //  private GameObject room1;
+    Transform playerTran;
+    private Transform room1Tran;
+    private Transform room2Tran;//I added this
+    private Transform room3Tran;
+    private GameObject zombieSpawner;
+    private Transform room1TranMoving;
+    private Transform room2TranMoving;
+    private Transform room3TranMoving;
+    private Transform zombieSpawnerTran;
+    Transform enemyTran;
+
+    [Tooltip("Furthest distance bullet will look for target")]
+	public float maxDistance = 1000000;
+	RaycastHit hit;
+	[Tooltip("Prefab of wall damange hit. The object needs 'LevelPart' tag to create decal on it.")]
+	public GameObject decalHitWall;
+	[Tooltip("Decal will need to be sligtly infront of the wall so it doesnt cause rendeing problems so for best feel put from 0.01-0.1.")]
+	public float floatInfrontOfWall;
+	[Tooltip("Blood prefab particle this bullet will create upoon hitting enemy")]
+	public GameObject bloodEffect;
+    [Tooltip("Blood prefab particle this bullet will create upoon hitting enemy")]
+    public GameObject zombie;
+    [Tooltip("Blood prefab particle this bullet will create upoon hitting enemy")]
+    public GameObject granny;
+    [Tooltip("Blood prefab particle this bullet will create upoon hitting enemy")]
+    public GameObject boy;
+    [Tooltip("Blood prefab particle this bullet will create upoon hitting enemy")]
+    public GameObject hippy;
+    [Tooltip("Put Weapon layer and Player layer to ignore bullet raycast.")]
+	public LayerMask ignoreLayer;
+    private int zombiesInGame;
+    private float dist;
+    private float dist2;
+    private float dist3;
+
+    private void Awake()
+    {
+  //   player = GameObject.Find("PlayerVariant");
+        playerTran = GameObject.Find("PlayerVariant").GetComponent<Transform>();
+    //    room1 = GameObject.Find("Room_01");
+        room1Tran = GameObject.Find("Room_01").GetComponent<Transform>();
+        room2Tran = GameObject.Find("Room_02").GetComponent<Transform>();
+        room3Tran = GameObject.Find("Room_03").GetComponent<Transform>();
+        //     zombieSpawner = GameObject.Find("ZombieSpawner");
+        room1TranMoving = GameObject.Find("Room1MovingTransform").GetComponent<Transform>();
+        room2TranMoving = GameObject.Find("Room2MovingTransform").GetComponent<Transform>();
+        room3TranMoving = GameObject.Find("Room3MovingTransform").GetComponent<Transform>();
+   //     zombieSpawnerTran = GameObject.Find("ZombieSpawner").GetComponent<Transform>();
+        /*
+        * Uppon bullet creation with this script attatched,
+        * bullet creates a raycast which searches for corresponding tags.
+        * If raycast finds somethig it will create a decal of corresponding tag.
+        */
+    }
+ // IEnumerator ExampleCoroutine()
+ // {
+        //Print the time of when the function is first called.
+      //  Debug.Log("Started Coroutine at timestamp : " + Time.time);
+
+        //yield on a new YieldInstruction that waits for 5 seconds.
+   //   yield return new WaitForSeconds(1);
+//
+        //After we have waited 5 seconds print the time again.
+      //  Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+    
+       
+  /// }
+    void Update () {
+        zombiesInGame = ScoreAndHighscoreUpdator.zombiesInGame;
+      dist = Vector3.Distance(room1Tran.position, playerTran.position);
+        dist2 = Vector3.Distance(room2Tran.position, playerTran.position);
+        dist3 = Vector3.Distance(room3Tran.position, playerTran.position);
+   //     Debug.Log("dist1 id "+ dist+ "dist2 id " + dist2+ "dist3 id " + dist3);
+        if (Physics.Raycast(transform.position, transform.forward,out hit, maxDistance, ~ignoreLayer)){
+			     if(decalHitWall){
+			    	if(hit.transform.tag == "LevelPart"){
+					Instantiate(decalHitWall, hit.point + hit.normal * floatInfrontOfWall, Quaternion.LookRotation(hit.normal));
+					Destroy(gameObject);
+                   }
+                if (hit.transform.tag == "Zombie") {
+                    score = score + 1;
+                    Destroy(hit.collider.gameObject); }
+                if (hit.transform.tag == "Dummie"){
+                
+                    score = score + 1;
+                    Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                 Instantiate(zombie, hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(gameObject);
+                    enemyTran = hit.collider.gameObject.GetComponent<Transform>();
+                    if (dist < 45)
+                    {
+                        ZombieCounter += 1;
+                        enemyTran.position = room2TranMoving.position;
+                        if (zombiesInGame<400) { Instantiate(boy, room2TranMoving.position, Quaternion.LookRotation(hit.normal)); }
+                       
+                    }
+
+                    else if (dist2 < 45)
+                    {
+                        ZombieCounter += 1;
+                        enemyTran.position = room3TranMoving.position;
+                        if (zombiesInGame < 400)
+                        { Instantiate(granny, room3TranMoving.position, Quaternion.LookRotation(hit.normal)); }
+                    }
+
+                    else if (dist3 < 45)
+                    {
+                        ZombieCounter += 1;
+                        enemyTran.position = room1TranMoving.position;
+                        if (zombiesInGame < 400)
+                        { Instantiate(hippy, room1TranMoving.position, Quaternion.LookRotation(hit.normal)); }
+                    }
+                    else { enemyTran.position = room1TranMoving.position; }
+
+                    //   Destroy(hit.collider.gameObject,1.5f);
+                    //    anim = hit.collider.gameObject.GetComponent<Animator>();
+                    //    hit.collider.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
+                    //   anim.SetBool("walk", false);
+                    //    anim.SetBool("idle", false);
+                    //    anim.SetTrigger("damage");
+                    // anim.SetTrigger("attack01");
+                    //    AudioSource source1 = hit.collider.gameObject.GetComponent<AudioSource>();
+                    //  GetComponent<AudioSource>().clip = source1.clip;
+                    //   source1.Play();
+                }
+            }		
+			Destroy(gameObject);
+		}
+     
+        Destroy(gameObject, 0.1f);
+	}
+
+}
