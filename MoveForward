@@ -1,0 +1,46 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MoveForward : MonoBehaviour
+{
+    private Rigidbody zombie;
+    //   private GameObject player;
+    private Transform playerTran;
+    public int amount = 5;
+    private float dist;
+ 
+
+    //  private Rigidbody playerRig;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        zombie = GetComponent<Rigidbody>();
+        //   player = GameObject.Find("PlayerVariant");
+        playerTran = GameObject.Find("PlayerVariant").GetComponent<Transform>();
+        //   playerRig = GameObject.Find("PlayerVariant").GetComponent<Rigidbody>();
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+       
+            dist = Vector3.Distance(transform.position, playerTran.position);
+        //    Debug.Log("The distance to Zombie is " + dist);
+            if (dist > 3)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, playerTran.position, amount * 0.009f);
+
+                transform.rotation = Quaternion.LookRotation(playerTran.position - transform.position);
+
+            }
+            else
+            {
+                zombie.AddForce(transform.forward * amount);
+            }
+       
+       
+
+    }
+}
