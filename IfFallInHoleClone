@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class IfFallInHoleClone : MonoBehaviour
+{
+
+    private Rigidbody rb;
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+    void FixedUpdate()
+    {
+     
+
+
+        if (rb.position.y < -1f)
+        {
+            Destroy(gameObject, 5);
+
+        }
+
+    }
+}
+
